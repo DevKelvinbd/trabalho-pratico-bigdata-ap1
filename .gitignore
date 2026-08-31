@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.venv/
+env/
+venv/
+
+# Logs e dados temporários de execução
+logs/*.log
+!logs/.gitkeep
+dw_output/
+
+# Docker volumes / temporários
+*.pid
