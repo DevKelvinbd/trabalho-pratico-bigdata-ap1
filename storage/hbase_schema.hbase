@@ -1,0 +1,27 @@
+# ==============================================================================
+# hbase_schema.hbase - Criação das Tabelas no Apache HBase
+# Trabalho Prático AP1 - Varejista Online (Big Data em Tempo Real)
+# Grupo 3 (Kelvin, Micaell, Ester, Kaike, Julio)
+#
+# Uso no terminal do HBase:
+#   hbase shell storage/hbase_schema.hbase
+# ==============================================================================
+
+# 1. Tabela para Alertas em Tempo Real gerados pelo Flink
+# RowKey sugerida: <TIPO_ALERTA>#<TIMESTAMP_REVERSO>#<ID>
+# Permite consultas rápidas ordenadas cronologicamente para atendimento/operações
+disable 'ecommerce_alerts' if exists 'ecommerce_alerts'
+drop 'ecommerce_alerts' if exists 'ecommerce_alerts'
+
+create 'ecommerce_alerts', {NAME => 'info', VERSIONS => 3}, {NAME => 'details', VERSIONS => 1}
+
+# 2. Tabela para Métricas Operacionais em Tempo Real (Hot Products / Trending)
+# RowKey sugerida: <CATEGORIA>#<PRODUCT_ID>
+disable 'product_realtime_metrics' if exists 'product_realtime_metrics'
+drop 'product_realtime_metrics' if exists 'product_realtime_metrics'
+
+create 'product_realtime_metrics', {NAME => 'stats', VERSIONS => 5}
+
+# Listar tabelas para conferência
+list
+exit
