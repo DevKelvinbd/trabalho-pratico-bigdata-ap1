@@ -1,0 +1,218 @@
+version: '3.8'
+
+# ==============================================================================
+# Docker Compose - Cluster Big Data em Tempo Real (E-commerce)
+# Trabalho Prático AP1 - Varejista Online
+# Grupo 3 (Kelvin, Micaell, Ester, Kaike, Julio)
+#
+# Serviços:
+#   - HDFS: NameNode e DataNode (apache/hadoop:3.3.6 - nativo ARM64)
+#   - HBase & Zookeeper: Armazenamento NoSQL de baixa latência para alertas
+#   - Hive Metastore: Catálogo de dados para Spark Batch
+#   - Flink: JobManager (porta 8081) e TaskManager (Streaming)
+#   - Spark: Master (porta 8080) e Worker (Batch Analytics)
+#   - Flume: Agente de ingestão (taildir -> HDFS + Flink)
+# ==============================================================================
+
+networks:
+  bigdata-net:
+    name: bigdata-net
+    driver: bridge
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
+  hbase_data:
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. HDFS (Hadoop Distributed File System) - Armazenamento de Logs Brutos
+  # ----------------------------------------------------------------------------
+  namenode:
+    image: apache/hadoop:3.3.6
+    container_name: namenode
+    hostname: namenode
+    restart: unless-stopped
+    environment:
+      - HADOOP_HOME=/opt/hadoop
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+      - HDFS_CONF_dfs_replication=1
+      - HDFS_CONF_dfs_permissions=false
+      - HADOOP_OPTS=-Xms128m -Xmx384m
+    ports:
+      - "9870:9870"   # NameNode Web UI
+      - "8020:8020"   # HDFS RPC
+    volumes:
+      - hadoop_namenode:/opt/hadoop/dfs/name
+      - ../logs:/logs
+      - ../storage:/storage
+    networks:
+      - bigdata-net
+    command: ["hdfs", "namenode"]
+
+  datanode:
+    image: apache/hadoop:3.3.6
+    container_name: datanode
+    hostname: datanode
+    restart: unless-stopped
+    depends_on:
+      - namenode
+    environment:
+      - HADOOP_HOME=/opt/hadoop
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+      - HDFS_CONF_dfs_replication=1
+      - HDFS_CONF_dfs_permissions=false
+      - HADOOP_OPTS=-Xms128m -Xmx384m
+    ports:
+      - "9864:9864"   # DataNode Web UI
+    volumes:
+      - hadoop_datanode:/opt/hadoop/dfs/data
+    networks:
+      - bigdata-net
+    command: ["hdfs", "datanode"]
+
+  # ----------------------------------------------------------------------------
+  # 2. HBase & Zookeeper - Armazenamento de Alertas em Tempo Real (Fast Data)
+  # ----------------------------------------------------------------------------
+  zookeeper:
+    image: zookeeper:3.8
+    container_name: zookeeper
+    hostname: zookeeper
+    restart: unless-stopped
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      JVMFLAGS: "-Xms64m -Xmx128m"
+    ports:
+      - "2181:2181"
+    networks:
+      - bigdata-net
+
+  hbase:
+    image: nerdamigo/hbase:2.4.9
+    container_name: hbase
+    hostname: hbase
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+      - namenode
+    environment:
+      - HBASE_MANAGES_ZK=false
+      - HBASE_ZOOKEEPER_QUORUM=zookeeper
+      - HBASE_ROOTDIR=hdfs://namenode:8020/hbase
+      - HBASE_OPTS=-Xms128m -Xmx384m
+    ports:
+      - "16010:16010" # HBase Master Web UI
+      - "9090:9090"   # HBase Thrift Server (API Python / HappyBase)
+    volumes:
+      - hbase_data:/data/hbase
+      - ../storage:/storage
+    networks:
+      - bigdata-net
+
+  # ----------------------------------------------------------------------------
+  # 3. Apache Flink - Processamento em Streaming (Janelas + Watermarks)
+  # ----------------------------------------------------------------------------
+  flink-jobmanager:
+    image: flink:1.17-scala_2.12-java11
+    container_name: flink-jobmanager
+    hostname: flink-jobmanager
+    restart: unless-stopped
+    ports:
+      - "8081:8081"   # Flink Dashboard Web UI
+      - "9999:9999"   # Porta para recebimento de stream do Flume
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+        jobmanager.memory.process.size: 768m
+        taskmanager.memory.process.size: 768m
+    volumes:
+      - ../logs:/logs
+      - ../flink:/opt/flink/jobs
+    networks:
+      - bigdata-net
+
+  flink-taskmanager:
+    image: flink:1.17-scala_2.12-java11
+    container_name: flink-taskmanager
+    hostname: flink-taskmanager
+    restart: unless-stopped
+    depends_on:
+      - flink-jobmanager
+    command: taskmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+        taskmanager.numberOfTaskSlots: 2
+        jobmanager.memory.process.size: 768m
+        taskmanager.memory.process.size: 768m
+    volumes:
+      - ../logs:/logs
+      - ../flink:/opt/flink/jobs
+    networks:
+      - bigdata-net
+
+  # ----------------------------------------------------------------------------
+  # 4. Apache Spark - Processamento em Lote (ETL com Wide Dependencies)
+  # ----------------------------------------------------------------------------
+  spark-master:
+    image: apache/spark:3.5.0
+    container_name: spark-master
+    hostname: spark-master
+    restart: unless-stopped
+    ports:
+      - "8080:8080"   # Spark Master Web UI
+      - "7077:7077"   # Spark Master RPC
+    environment:
+      - SPARK_MASTER_PORT=7077
+      - SPARK_MASTER_WEBUI_PORT=8080
+      - SPARK_DAEMON_MEMORY=384m
+    volumes:
+      - ../spark:/opt/spark/jobs
+      - ../logs:/logs
+    networks:
+      - bigdata-net
+    command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master"]
+
+  spark-worker:
+    image: apache/spark:3.5.0
+    container_name: spark-worker
+    hostname: spark-worker
+    restart: unless-stopped
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=768m
+    volumes:
+      - ../spark:/opt/spark/jobs
+      - ../logs:/logs
+    networks:
+      - bigdata-net
+    command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077"]
+
+  # ----------------------------------------------------------------------------
+  # 5. Apache Flume - Agente de Ingestão de Logs
+  # ----------------------------------------------------------------------------
+  flume:
+    image: probablyfine/flume:latest
+    container_name: flume-agent
+    hostname: flume-agent
+    restart: unless-stopped
+    depends_on:
+      - namenode
+      - flink-jobmanager
+    environment:
+      - FLUME_AGENT_NAME=ecommerce_agent
+      - FLUME_CONF_FILE=/opt/flume/conf/flume.conf
+      - JAVA_OPTS=-Xms128m -Xmx384m
+    volumes:
+      - ../logs:/logs
+      - ../flume/flume.conf:/opt/flume/conf/flume.conf:ro
+      - ../flume/flume-env.sh:/opt/flume/conf/flume-env.sh:ro
+    networks:
+      - bigdata-net
