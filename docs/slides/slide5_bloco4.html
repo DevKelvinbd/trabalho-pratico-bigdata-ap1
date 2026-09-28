@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Slide 5 - Bloco 4: Spark Batch & Hive DW | Julio Rodrigues</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px;
+      height: 1080px;
+      background: #090d13;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      padding: 36px 60px;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #21262d;
+      padding-bottom: 16px;
+      margin-bottom: 22px;
+    }
+    .title-group h1 {
+      font-size: 28px;
+      color: #58a6ff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .title-group p {
+      font-size: 16px;
+      color: #8b949e;
+      margin-top: 4px;
+    }
+    .header-badges {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .badge-time {
+      background: #238636;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .badge-speaker {
+      background: #1f6feb22;
+      border: 1px solid #388bfd;
+      color: #79c0ff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .print-panel {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .panel-header {
+      background: #161b22;
+      padding: 12px 18px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13.5px;
+    }
+    .dots { display: flex; gap: 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f56; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #27c93f; }
+    .print-img-container {
+      flex: 1;
+      background: #010409;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 10px;
+    }
+    .print-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .code-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .code-card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .code-body {
+      background: #06090f;
+      padding: 16px 20px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12.5px;
+      line-height: 1.48;
+      color: #e6edf3;
+      flex: 1;
+      overflow: hidden;
+    }
+    .kw { color: #ff7b72; font-weight: bold; }
+    .prop { color: #79c0ff; }
+    .str { color: #a5d6ff; }
+    .comm { color: #8b949e; font-style: italic; }
+    .hl-wide {
+      background: rgba(248, 81, 73, 0.12);
+      border-left: 3px solid #f85149;
+      padding: 2px 8px;
+      margin: 3px 0;
+    }
+    .hl-hive {
+      background: rgba(46, 160, 67, 0.12);
+      border-left: 3px solid #3fb950;
+      padding: 2px 8px;
+      margin: 3px 0;
+    }
+
+    .tech-highlights {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .highlight-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .highlight-card h4 {
+      font-size: 13.5px;
+      color: #58a6ff;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .highlight-card p {
+      font-size: 13px;
+      color: #8b949e;
+      line-height: 1.4;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      border-top: 1px solid #21262d;
+      padding-top: 12px;
+      font-size: 14px;
+      color: #8b949e;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>🔥 Bloco 4: Batch Analytics com Spark & Hive DW</h1>
+      <p>Demonstração Explícita de Wide Dependencies (Shuffles no DAG) e Carga Particionada em ORC</p>
+    </div>
+    <div class="header-badges">
+      <span class="badge-time">⏱️ 02:40 – 03:50 (70s)</span>
+      <span class="badge-speaker">Julio Henrique Rodrigues</span>
+    </div>
+  </header>
+
+  <div class="split-layout">
+    <!-- LADO ESQUERDO: Print do Teste -->
+    <div class="print-panel">
+      <div class="panel-header">
+        <div class="dots">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+        </div>
+        <span style="color: #79c0ff;">Evidência Visual: Spark UI DAG (Shuffle) + Hive DW</span>
+        <span style="color: #ff7b72;">🔀 Shuffle Comprovado</span>
+      </div>
+      <div class="print-img-container">
+        <img src="../prints/print_bloco4_spark_batch_hive.png" alt="Print Bloco 4">
+      </div>
+    </div>
+
+    <!-- LADO DIREITO: Código Importante & Destaques Técnicos -->
+    <div class="code-panel">
+      <div class="code-card">
+        <div class="panel-header">
+          <span style="color: #f0f6fc;">spark/etl_batch.py & hive_tables.sql</span>
+          <span style="color: #ff7b72;">Wide Dependencies (70% Nota Técnica)</span>
+        </div>
+        <div class="code-body">
+          <p class="comm"># 1. WIDE DEPENDENCY I: RDD reduceByKey (Exige Shuffle pela rede)</p>
+          <div class="hl-wide">
+            <p>category_subtotals = cart_rdd \</p>
+            <p>&nbsp;&nbsp;.map(<span class="kw">lambda</span> r: (r.category, float(r.subtotal))) \</p>
+            <p>&nbsp;&nbsp;.<span class="prop" style="color: #ff7b72; font-weight: bold;">reduceByKey</span>(<span class="kw">lambda</span> a, b: a + b)  <span class="comm"># Shuffle Boundary!</span></p>
+          </div>
+          <br>
+          <p class="comm"># 2. WIDE DEPENDENCY II: RDD Join entre Datasets Distintos</p>
+          <div class="hl-wide">
+            <p>user_conversions = clicks_user.<span class="prop" style="color: #ff7b72; font-weight: bold;">join</span>(checkouts_user)  <span class="comm"># Shuffle Join</span></p>
+          </div>
+          <br>
+          <p class="comm"># 3. Persistência no Apache Hive (Data Warehouse com Partition Pruning)</p>
+          <div class="hl-hive">
+            <p>df_funnel.write.mode(<span class="str">"append"</span>) \</p>
+            <p>&nbsp;&nbsp;.partitionBy(<span class="str">"dt"</span>) \  <span class="comm"># Partição diária</span></p>
+            <p>&nbsp;&nbsp;.format(<span class="str">"orc"</span>) \  <span class="comm"># Formato colunar comprimido</span></p>
+            <p>&nbsp;&nbsp;.saveAsTable(<span class="str">"ecommerce_dw.dw_sales_funnel_daily"</span>)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-highlights">
+        <div class="highlight-card">
+          <h4>🔀 Por que Wide Dependency?</h4>
+          <p>Diferente de Narrow (map/filter), o <code>reduceByKey</code> e <code>join</code> exigem redistribuição de dados entre partições pela rede, criando estágios de Shuffle no DAG.</p>
+        </div>
+        <div class="highlight-card">
+          <h4>📊 Funil de Vendas Consolidado</h4>
+          <p>O Spark calcula métricas de negócio cruciais: taxas de conversão de cliques para carrinho e de carrinho para checkout, além do faturamento diário por categoria.</p>
+        </div>
+        <div class="highlight-card">
+          <h4>🐝 Formato Colunar ORC</h4>
+          <p>O formato Optimized Row Columnar compacta os dados por tipo de dado e inclui estatísticas de min/max nos strip indexes, acelerando consultas analíticas.</p>
+        </div>
+        <div class="highlight-card">
+          <h4>🎯 Partition Pruning por Data</h4>
+          <p>O particionamento por <code>dt</code> instrui a engine de SQL a ler apenas a pasta da data solicitada, economizando até 85% de I/O em dashboards de BI.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>Trabalho Prático AP1 • Big Data em Tempo Real</div>
+    <div>Grupo 3: Kelvin Dias • Micaell Gomes • Ester Luiza • Kaike Alves • Julio Rodrigues</div>
+  </footer>
+
+</body>
+</html>

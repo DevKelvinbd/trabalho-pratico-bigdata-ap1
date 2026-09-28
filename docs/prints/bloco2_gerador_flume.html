@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Bloco 2 - Geração Contínua & Flume Fan-out | Grupo 3</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px;
+      height: 1080px;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 60px;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #30363d;
+      padding-bottom: 20px;
+      margin-bottom: 26px;
+    }
+    .badge-time {
+      background: #238636;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .title-group h1 {
+      font-size: 32px;
+      color: #58a6ff;
+      margin-bottom: 6px;
+    }
+    .title-group p {
+      font-size: 18px;
+      color: #8b949e;
+    }
+    .team-badge {
+      background: #1f6feb22;
+      border: 1px solid #1f6feb88;
+      color: #58a6ff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      flex: 1;
+    }
+
+    .card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-header {
+      background: #161b22;
+      padding: 12px 20px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mac-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .mac-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f0f6fc;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .terminal {
+      font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      background: #06090f;
+      padding: 18px;
+      border-radius: 8px;
+      flex: 1;
+      overflow: hidden;
+      color: #e6edf3;
+    }
+    .prompt { color: #58a6ff; font-weight: bold; }
+    .cmd { color: #f0f6fc; font-weight: bold; }
+    .late-badge {
+      background: #da363333;
+      border: 1px solid #da3633;
+      color: #ff7b72;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .click-tag { color: #79c0ff; font-weight: 600; }
+    .cart-tag { color: #d2a8ff; font-weight: 600; }
+    .checkout-tag { color: #7ee787; font-weight: 600; }
+    .delivery-tag { color: #ffa657; font-weight: 600; }
+
+    /* Code Block styling */
+    .code-block {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 13.5px;
+      line-height: 1.55;
+      background: #06090f;
+      padding: 18px;
+      border-radius: 8px;
+      flex: 1;
+      overflow: hidden;
+      color: #e6edf3;
+    }
+    .comment { color: #8b949e; font-style: italic; }
+    .prop-key { color: #79c0ff; }
+    .prop-val { color: #a5d6ff; }
+    .highlight-line {
+      background: #388bfd1f;
+      border-left: 3px solid #58a6ff;
+      padding-left: 6px;
+      margin: 2px 0;
+    }
+
+    footer {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      color: #8b949e;
+    }
+    .speaker-box {
+      background: #161b22;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      color: #f0f6fc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .speaker-box strong { color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>📡 Bloco 2: Geração Contínua de Eventos & Ingestão com Flume</h1>
+      <p>Simulação Realista de E-commerce com Eventos Fora de Ordem e Fan-Out Replicating</p>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <span class="badge-time">⏱️ 00:45 – 01:30 (45s)</span>
+      <div class="team-badge">Grupo 3</div>
+    </div>
+  </header>
+
+  <div class="grid-container">
+    <!-- Card 1: Execução do Gerador -->
+    <div class="card">
+      <div class="card-header">
+        <div class="mac-dots">
+          <div class="mac-dot dot-red"></div>
+          <div class="mac-dot dot-yellow"></div>
+          <div class="mac-dot dot-green"></div>
+        </div>
+        <span class="card-title">terminal — python3 generator/gerador.py</span>
+        <span style="color: #3fb950; font-size: 13px;">● Executando ao vivo (5 msg/s)</span>
+      </div>
+      <div class="card-body" style="padding: 16px;">
+        <div class="terminal">
+          <p><span class="prompt">micaell@macbook:~$</span> <span class="cmd">python3 generator/gerador.py --rate 5 --out-of-order-prob 0.20 --stdout</span></p>
+          <p style="color: #8b949e;">======================================================================</p>
+          <p style="color: #58a6ff; font-weight: bold;">🚀 Gerador de Eventos de E-commerce (Big Data em Tempo Real)</p>
+          <p>📁 Saída: logs/ecommerce.log | ⚡ 5.0 ev/s | ⏳ Out-of-Order: 20.0% (atraso até 20s)</p>
+          <p style="color: #8b949e;">======================================================================</p>
+          <p>[00001] <span class="cart-tag">CART_ADD</span> | ESP-503 (Smartwatch) | User: USR_0098</p>
+          <p>[00002] <span class="click-tag">CLICK</span> | ESP-501 (Mountain Bike) | User: USR_0017</p>
+          <p>[00003] <span class="cart-tag">CART_ADD</span> | INF-203 (Teclado RGB) | User: USR_0015</p>
+          <p>[00004] <span class="click-tag">CLICK</span> | MOD-302 (Camiseta) | User: USR_0041</p>
+          <p>[00005] <span class="click-tag">CLICK</span> | MOD-301 | User: USR_0030 <span class="late-badge">⏰ LATE EVENT (Jitter +12s)</span></p>
+          <p>[00006] <span class="delivery-tag">DELIVERY_UPDATE</span> | ORD_530358 | Status: FAILED_ATTEMPT | Carrier: Jadlog</p>
+          <p>[00007] <span class="click-tag">CLICK</span> | INF-204 (Mouse Sem Fio) | User: USR_0024</p>
+          <p>[00008] <span class="cart-tag">CART_ADD</span> | ESP-503 | User: USR_0013</p>
+          <p>[00009] <span class="click-tag">CLICK</span> | INF-203 | User: USR_0001</p>
+          <p>[00010] <span class="click-tag">CLICK</span> | CAS-403 | User: USR_0092 <span class="late-badge">⏰ LATE EVENT (Jitter +8s)</span></p>
+          <p>[00011] <span class="checkout-tag">CHECKOUT_COMPLETED</span> | ORD_387713 | Total: R$ 4.318,90 | Pix</p>
+          <p>[00012] <span class="click-tag">CLICK</span> | EL-101 (Galaxy S24) | User: USR_0098</p>
+          <p>[00013] <span class="delivery-tag">DELIVERY_UPDATE</span> | ORD_398773 | Status: DELAYED (+127min)</p>
+          <p>[00014] <span class="checkout-tag">CHECKOUT_COMPLETED</span> | ORD_694721 | Total: R$ 1.518,90 | Cartão</p>
+          <p style="color: #3fb950;">✔ Eventos persistidos atomicamente em logs/ecommerce.log</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Configuração do Flume -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📄 flume/flume.conf (TAILDIR + Fan-Out Replicating)</span>
+        <span style="color: #d29922; font-size: 13px;">Conf de Ingestão</span>
+      </div>
+      <div class="card-body" style="padding: 16px;">
+        <div class="code-block">
+          <p class="comment"># 1. Source TAILDIR com checkpoint de posição persistente</p>
+          <p><span class="prop-key">ecommerce_agent.sources.src_tail.type</span> = <span class="prop-val">TAILDIR</span></p>
+          <p><span class="prop-key">ecommerce_agent.sources.src_tail.positionFile</span> = <span class="prop-val">/var/log/flume/taildir_position.json</span></p>
+          <p><span class="prop-key">ecommerce_agent.sources.src_tail.filegroups.f_ecommerce</span> = <span class="prop-val">/logs/ecommerce.log</span></p>
+          <br>
+          <p class="comment"># 2. Seletor REPLICATING (Fan-Out: duplicação simultânea)</p>
+          <div class="highlight-line">
+            <p><span class="prop-key">ecommerce_agent.sources.src_tail.selector.type</span> = <span class="prop-val" style="color: #7ee787; font-weight: bold;">replicating</span></p>
+            <p><span class="prop-key">ecommerce_agent.sources.src_tail.channels</span> = <span class="prop-val" style="color: #7ee787; font-weight: bold;">c_hdfs c_flink</span></p>
+          </div>
+          <br>
+          <p class="comment"># 3. Sink 1: HDFS (Logs Brutos para Camada Batch / Spark / Hive)</p>
+          <p><span class="prop-key">ecommerce_agent.sinks.sink_hdfs.type</span> = <span class="prop-val">hdfs</span></p>
+          <p><span class="prop-key">ecommerce_agent.sinks.sink_hdfs.hdfs.path</span> = <span class="prop-val">hdfs://namenode:8020/raw/ecommerce/year=%Y/month=%m/day=%d</span></p>
+          <p><span class="prop-key">ecommerce_agent.sinks.sink_hdfs.hdfs.rollInterval</span> = <span class="prop-val">60</span></p>
+          <p><span class="prop-key">ecommerce_agent.sinks.sink_hdfs.hdfs.rollSize</span> = <span class="prop-val">10485760 (10MB)</span></p>
+          <br>
+          <p class="comment"># 4. Sink 2: Flink (Streaming de Baixa Latência via Avro RPC)</p>
+          <p><span class="prop-key">ecommerce_agent.sinks.sink_flink.type</span> = <span class="prop-val">avro</span></p>
+          <p><span class="prop-key">ecommerce_agent.sinks.sink_flink.hostname</span> = <span class="prop-val">flink-jobmanager</span></p>
+          <p><span class="prop-key">ecommerce_agent.sinks.sink_flink.port</span> = <span class="prop-val">9999</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="speaker-box">
+      <span>🎤 Apresentador: <strong>Micaell Gomes</strong></span>
+      <span style="color: #8b949e;">|</span>
+      <span>Foco: Simulação de Jitter de Rede (Watermarks) e Resiliência da Ingestão com Flume</span>
+    </div>
+    <div>Grupo 3 • Big Data em Tempo Real</div>
+  </footer>
+
+</body>
+</html>

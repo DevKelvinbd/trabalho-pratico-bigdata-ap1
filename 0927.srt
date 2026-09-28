@@ -1,0 +1,420 @@
+1
+00:00:00,000 --> 00:00:00,666
+olá a todos
+
+2
+00:00:00,666 --> 00:00:01,466
+somos o grupo três
+
+3
+00:00:01,866 --> 00:00:03,933
+e vamos apresentar nossa arquitetura de Big data
+
+4
+00:00:04,166 --> 00:00:04,733
+em tempo real
+
+5
+00:00:04,733 --> 00:00:07,100
+para monitoramento de vendas e logística de um e
+
+6
+00:00:07,166 --> 00:00:07,900
+commerce
+
+7
+00:00:07,900 --> 00:00:10,266
+nosso objetivo foi cobrir todo o ciclo de vida do dado
+
+8
+00:00:10,600 --> 00:00:12,900
+desde a geração de eventos contínuos de cliques
+
+9
+00:00:13,066 --> 00:00:13,600
+carrinhos
+
+10
+00:00:13,600 --> 00:00:14,400
+entregas
+
+11
+00:00:14,466 --> 00:00:16,966
+passando pela injeção desacoplada com flume
+
+12
+00:00:17,200 --> 00:00:19,300
+streaming de baixíssima latência com flink
+
+13
+00:00:19,700 --> 00:00:23,266
+gravando em h base e processamento analítico em lote
+
+14
+00:00:23,333 --> 00:00:25,166
+com Spark persistindo no hive
+
+15
+00:00:25,400 --> 00:00:27,666
+construímos um ambiente orquestrado via Docker
+
+16
+00:00:27,733 --> 00:00:29,000
+com foco em estabilidade
+
+17
+00:00:29,200 --> 00:00:31,600
+e conformidade com o ecossistema radupe
+
+18
+00:00:31,666 --> 00:00:34,100
+aqui no gerador python três
+
+19
+00:00:34,300 --> 00:00:36,400
+produzimos eventos em formato de som
+
+20
+00:00:36,566 --> 00:00:37,933
+simulando a navegação de clientes
+
+21
+00:00:38,000 --> 00:00:39,500
+e o status de transportadores
+
+22
+00:00:40,000 --> 00:00:40,933
+o diferencial
+
+23
+00:00:41,166 --> 00:00:43,700
+técnico é a simulação de eventos fora de ordem
+
+24
+00:00:43,900 --> 00:00:46,133
+refletindo a estabilidade de conexões
+
+25
+00:00:46,766 --> 00:00:49,600
+reais para validar ao Walter Max no flink
+
+26
+00:00:49,966 --> 00:00:50,766
+para a injeção
+
+27
+00:00:50,900 --> 00:00:54,000
+configuramos o apê Flama como surge tired
+
+28
+00:00:54,100 --> 00:00:55,500
+se eu não souber o nome me perdoe
+
+29
+00:00:55,566 --> 00:00:56,366
+mas é muito difícil
+
+30
+00:00:56,466 --> 00:00:58,566
+e rastreia o arquivo sem perder a posição
+
+31
+00:00:58,766 --> 00:01:00,000
+em caso de reinício
+
+32
+00:01:00,133 --> 00:01:01,800
+como um seletor replicaite
+
+33
+00:01:01,966 --> 00:01:02,766
+o flâmula
+
+34
+00:01:03,300 --> 00:01:05,333
+duplica o fluxo de fart out
+
+35
+00:01:05,533 --> 00:01:08,500
+e salva o log e bruto íntegro no hfs
+
+36
+00:01:08,733 --> 00:01:10,066
+e alimenta simultaneamente
+
+37
+00:01:10,266 --> 00:01:12,266
+a esteira em tempo real no flink
+
+38
+00:01:13,000 --> 00:01:13,800
+muito obrigado
+
+39
+00:01:13,833 --> 00:01:14,866
+no apate flink
+
+40
+00:01:15,533 --> 00:01:17,600
+implementamos janelas deslizantes
+
+41
+00:01:17,733 --> 00:01:19,066
+baseadas em event time
+
+42
+00:01:19,600 --> 00:01:20,966
+com tolerância a atrasos
+
+43
+00:01:21,066 --> 00:01:23,500
+via balneada da Order of watermarks
+
+44
+00:01:23,933 --> 00:01:25,800
+eventos com atraso tolerável
+
+45
+00:01:25,966 --> 00:01:28,900
+são reordenados e atribuídos a janela correta
+
+46
+00:01:29,366 --> 00:01:30,466
+quando a janela fecha
+
+47
+00:01:30,800 --> 00:01:33,300
+agregamos o volume de interações por produto
+
+48
+00:01:33,566 --> 00:01:35,566
+para detectar tendências de alta
+
+49
+00:01:35,766 --> 00:01:36,566
+Hot products
+
+50
+00:01:36,766 --> 00:01:39,933
+se o volume de cliques ou compras ultrapassa o linear
+
+51
+00:01:40,000 --> 00:01:42,400
+um alerta operacional é emitido instantaneamente
+
+52
+00:01:42,766 --> 00:01:44,866
+e para uma análise alerta de forma veloz
+
+53
+00:01:45,066 --> 00:01:46,900
+usamos o apaste h base
+
+54
+00:01:47,166 --> 00:01:49,966
+como o h d f s não suporta atualizações randômicas
+
+55
+00:01:50,100 --> 00:01:52,733
+gravamos diretamente no h base na tabela e commerce
+
+56
+00:01:52,900 --> 00:01:55,966
+alertas com row case é reservadas temporal
+
+57
+00:01:56,166 --> 00:01:56,300
+isso
+
+58
+00:01:56,300 --> 00:01:58,800
+viabiliza que as equipes de logística e atendimento
+
+59
+00:01:58,900 --> 00:01:59,700
+façam consultas
+
+60
+00:01:59,733 --> 00:02:00,300
+pontuais
+
+61
+00:02:00,300 --> 00:02:01,566
+em milissegundos com o simples
+
+62
+00:02:01,766 --> 00:02:02,566
+scan ou get
+
+63
+00:02:02,766 --> 00:02:03,666
+identificando atrasos
+
+64
+00:02:03,866 --> 00:02:05,333
+críticos de entregas no tempo real
+
+65
+00:02:06,200 --> 00:02:09,200
+nessa etapa usamos o Apache Spark
+
+66
+00:02:09,866 --> 00:02:11,166
+para análise de dados
+
+67
+00:02:11,500 --> 00:02:15,533
+com históricos de armazenamento no HDs dfs
+
+68
+00:02:16,066 --> 00:02:17,700
+utilizamos operações como
+
+69
+00:02:18,266 --> 00:02:19,066
+reduce baby
+
+70
+00:02:20,500 --> 00:02:21,300
+para calcular
+
+71
+00:02:22,066 --> 00:02:24,133
+o faturamento e Joy
+
+72
+00:02:24,966 --> 00:02:28,000
+para relacionar os dados de cliques e compras
+
+73
+00:02:28,566 --> 00:02:31,666
+esta esses operações gera o surf
+
+74
+00:02:32,100 --> 00:02:35,800
+que reorganiza os dados entre os executadores
+
+75
+00:02:36,200 --> 00:02:37,000
+por fim
+
+76
+00:02:37,166 --> 00:02:37,966
+o resultado
+
+77
+00:02:38,500 --> 00:02:40,333
+são armazenado em Raí
+
+78
+00:02:41,933 --> 00:02:45,333
+e ficando disponível para as ferramentas de bi
+
+79
+00:02:46,133 --> 00:02:46,800
+para concluir
+
+80
+00:02:47,000 --> 00:02:49,933
+justificamos as 3 principais escolhas arquiteturais
+
+81
+00:02:50,066 --> 00:02:51,166
+do nosso protótipo
+
+82
+00:02:51,266 --> 00:02:53,766
+por que flink e não apenas Spark streaming
+
+83
+00:02:53,933 --> 00:02:57,133
+porque o flink é um motor nativamente event Driving
+
+84
+00:02:57,266 --> 00:02:59,733
+processando registro a registro com latência
+
+85
+00:03:00,100 --> 00:03:00,900
+subsegundo
+
+86
+00:03:00,966 --> 00:03:03,000
+e manipulação precisa de watermarks
+
+87
+00:03:03,166 --> 00:03:05,200
+enquanto o Spark stream tradicional
+
+88
+00:03:05,400 --> 00:03:06,800
+opera por microbetting
+
+89
+00:03:06,966 --> 00:03:09,166
+porque h base e não apenas h d f s
+
+90
+00:03:09,366 --> 00:03:10,133
+o h d f s
+
+91
+00:03:10,133 --> 00:03:11,566
+é voltado para o trog
+
+92
+00:03:11,733 --> 00:03:13,300
+put sequencial de arquivos grandes
+
+93
+00:03:13,533 --> 00:03:14,266
+o hbase
+
+94
+00:03:14,266 --> 00:03:16,000
+provê a leitura e escrita pontual
+
+95
+00:03:16,266 --> 00:03:18,900
+randômica por chave com baixíssimo latência
+
+96
+00:03:18,933 --> 00:03:20,000
+para atendimento operacional
+
+97
+00:03:20,166 --> 00:03:23,400
+porque hive e não consultas diretas no hdfs
+
+98
+00:03:23,600 --> 00:03:26,366
+o hive provê o catálogo de metadados
+
+99
+00:03:26,700 --> 00:03:29,600
+esquema estruturado e otimização por participação
+
+100
+00:03:29,966 --> 00:03:32,500
+para consumo de bi e analistas de negócio
+
+101
+00:03:32,900 --> 00:03:33,266
+dessa forma
+
+102
+00:03:33,266 --> 00:03:35,400
+o pipeline entrega dados com velocidade
+
+103
+00:03:35,500 --> 00:03:36,600
+na ponta operacional
+
+104
+00:03:36,800 --> 00:03:39,400
+e profundidade histórica no data warehouse
+
+105
+00:03:39,566 --> 00:03:40,100
+muito obrigado
+

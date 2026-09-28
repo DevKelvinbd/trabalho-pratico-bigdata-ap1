@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Slide 4 - Bloco 3: Streaming Flink & HBase | Ester Luiza & Kaike Alves</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px;
+      height: 1080px;
+      background: #090d13;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      padding: 36px 60px;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #21262d;
+      padding-bottom: 16px;
+      margin-bottom: 22px;
+    }
+    .title-group h1 {
+      font-size: 28px;
+      color: #58a6ff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .title-group p {
+      font-size: 16px;
+      color: #8b949e;
+      margin-top: 4px;
+    }
+    .header-badges {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .badge-time {
+      background: #238636;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .badge-speaker {
+      background: #1f6feb22;
+      border: 1px solid #388bfd;
+      color: #79c0ff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      flex: 1;
+    }
+
+    .print-panel {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .panel-header {
+      background: #161b22;
+      padding: 12px 18px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13.5px;
+    }
+    .dots { display: flex; gap: 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f56; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #27c93f; }
+    .print-img-container {
+      flex: 1;
+      background: #010409;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 10px;
+    }
+    .print-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .code-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .code-card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .code-body {
+      background: #06090f;
+      padding: 16px 20px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12.5px;
+      line-height: 1.48;
+      color: #e6edf3;
+      flex: 1;
+      overflow: hidden;
+    }
+    .kw { color: #ff7b72; font-weight: bold; }
+    .prop { color: #79c0ff; }
+    .str { color: #a5d6ff; }
+    .comm { color: #8b949e; font-style: italic; }
+    .hl-flink {
+      background: rgba(56, 139, 253, 0.12);
+      border-left: 3px solid #58a6ff;
+      padding: 2px 8px;
+      margin: 3px 0;
+    }
+    .hl-hbase {
+      background: rgba(210, 153, 34, 0.15);
+      border-left: 3px solid #d29922;
+      padding: 2px 8px;
+      margin: 3px 0;
+    }
+
+    .tech-highlights {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .highlight-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .highlight-card h4 {
+      font-size: 13.5px;
+      color: #58a6ff;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .highlight-card p {
+      font-size: 13px;
+      color: #8b949e;
+      line-height: 1.4;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      border-top: 1px solid #21262d;
+      padding-top: 12px;
+      font-size: 14px;
+      color: #8b949e;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>⚡ Bloco 3: Streaming no Apache Flink & Alertas no HBase</h1>
+      <p>Sliding Windows (60s/15s), Watermarks (BoundedOutOfOrderness) e RowKey Reversa NoSQL</p>
+    </div>
+    <div class="header-badges">
+      <span class="badge-time">⏱️ 01:30 – 02:40 (70s)</span>
+      <span class="badge-speaker">Ester Luiza & Kaike Alves</span>
+    </div>
+  </header>
+
+  <div class="split-layout">
+    <!-- LADO ESQUERDO: Print do Teste -->
+    <div class="print-panel">
+      <div class="panel-header">
+        <div class="dots">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+        </div>
+        <span style="color: #79c0ff;">Evidência Visual: Flink Dashboard + hbase shell</span>
+        <span style="color: #3fb950;">⚡ Leitura Randômica &lt; 5ms</span>
+      </div>
+      <div class="print-img-container">
+        <img src="../prints/print_bloco3_flink_streaming_hbase.png" alt="Print Bloco 3">
+      </div>
+    </div>
+
+    <!-- LADO DIREITO: Código Importante & Destaques Técnicos -->
+    <div class="code-panel">
+      <div class="code-card">
+        <div class="panel-header">
+          <span style="color: #f0f6fc;">flink_streaming_job.py & hbase_schema.hbase</span>
+          <span style="color: #58a6ff;">Event Time & Key Reversa</span>
+        </div>
+        <div class="code-body">
+          <p class="comm"># 1. Flink: Watermarks com tolerância a atrasos (BoundedOutOfOrderness)</p>
+          <div class="hl-flink">
+            <p><span class="kw">if</span> event_time - MAX_ALLOWED_DELAY_MS &gt; current_watermark_ms:</p>
+            <p>&nbsp;&nbsp;current_watermark_ms = event_time - MAX_ALLOWED_DELAY_MS  <span class="comm"># 15s de tolerância</span></p>
+            <p><span class="kw">if</span> event_time &lt; current_watermark_ms: <span class="kw">continue</span>  <span class="comm"># Descarte late data</span></p>
+          </div>
+          <br>
+          <p class="comm"># 2. Janelas Deslizantes (Sliding Windows: 60s, slide 15s) no Event Time</p>
+          <p>first_win_start = (event_time // s_ms) * s_ms - w_ms + s_ms</p>
+          <p>active_windows[(win_start, win_end)][prod_id] += 1</p>
+          <br>
+          <p class="comm"># 3. HBase Sink com RowKey Temporal Reversa (Alertas Recentes no Topo)</p>
+          <div class="hl-hbase">
+            <p>reverse_ts = 9999999999999 - event_time  <span class="comm"># Inversão do carimbo de tempo</span></p>
+            <p>row_key = <span class="str">f"LOGISTICS_ALERT#{reverse_ts}#{order_id}"</span></p>
+            <p>hbase_sink.put_alert(row_key, alert_payload)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-highlights">
+        <div class="highlight-card">
+          <h4>🌊 Event Time vs Processing Time</h4>
+          <p>O processamento respeita a hora real em que o evento ocorreu no cliente, garantindo integridade das janelas mesmo com lentidão na internet.</p>
+        </div>
+        <div class="highlight-card">
+          <h4>⏳ Janelas Deslizantes (60s / 15s)</h4>
+          <p>Permite calcular métricas a cada 15 segundos considerando o histórico do último minuto, detectando picos de interesse de produtos em tempo real.</p>
+        </div>
+        <div class="highlight-card">
+          <h4>🔑 RowKey Reversa no HBase</h4>
+          <p>Ao subtrair o timestamp de 9999999999999, os registros mais novos ganham chaves lexicograficamente menores, posicionando-os no topo da partição.</p>
+        </div>
+        <div class="highlight-card">
+          <h4>⚡ Leitura Operacional &lt; 5ms</h4>
+          <p>Enquanto o HDFS exige leitura sequencial de blocos, o HBase viabiliza consultas operacionais instantâneas por chave para equipes de logística e SAC.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>Trabalho Prático AP1 • Big Data em Tempo Real</div>
+    <div>Grupo 3: Kelvin Dias • Micaell Gomes • Ester Luiza • Kaike Alves • Julio Rodrigues</div>
+  </footer>
+
+</body>
+</html>

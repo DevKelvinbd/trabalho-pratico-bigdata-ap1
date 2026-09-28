@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Bloco 4 - Spark Batch Analytics & Hive DW | Grupo 3</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px;
+      height: 1080px;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 60px;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #30363d;
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+    .badge-time {
+      background: #238636;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .title-group h1 {
+      font-size: 32px;
+      color: #58a6ff;
+      margin-bottom: 6px;
+    }
+    .title-group p {
+      font-size: 18px;
+      color: #8b949e;
+    }
+    .team-badge {
+      background: #1f6feb22;
+      border: 1px solid #1f6feb88;
+      color: #58a6ff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      flex: 1;
+    }
+
+    .card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-header {
+      background: #161b22;
+      padding: 12px 20px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mac-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .mac-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f0f6fc;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    /* Spark UI DAG Visual */
+    .dag-box {
+      background: #06090f;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .dag-stage {
+      background: #161b22;
+      border: 1px solid #388bfd;
+      border-radius: 8px;
+      padding: 12px 16px;
+      position: relative;
+    }
+    .dag-stage-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #79c0ff;
+      display: flex;
+      justify-content: space-between;
+    }
+    .dag-ops {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+      font-family: monospace;
+      font-size: 12.5px;
+    }
+    .op-tag {
+      background: #21262d;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #30363d;
+      color: #f0f6fc;
+    }
+    .op-shuffle {
+      background: #da363333;
+      border: 1px solid #da3633;
+      color: #ff7b72;
+      font-weight: bold;
+    }
+    .dag-arrow {
+      text-align: center;
+      color: #ff7b72;
+      font-weight: bold;
+      font-size: 16px;
+      margin: -4px 0;
+    }
+
+    .terminal {
+      font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      background: #06090f;
+      padding: 16px;
+      border-radius: 8px;
+      flex: 1;
+      overflow: hidden;
+      color: #e6edf3;
+    }
+    .prompt { color: #58a6ff; font-weight: bold; }
+    .cmd { color: #f0f6fc; font-weight: bold; }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #30363d;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #161b22;
+      color: #58a6ff;
+      font-weight: 600;
+    }
+    tr:nth-child(even) { background: #0d1117; }
+    tr:nth-child(odd) { background: #06090f; }
+
+    footer {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      color: #8b949e;
+    }
+    .speaker-box {
+      background: #161b22;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      color: #f0f6fc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .speaker-box strong { color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>🔥 Bloco 4: Batch Analytics com Spark & Hive Data Warehouse</h1>
+      <p>Wide Dependencies Explícitas (reduceByKey & Join), Shuffle e Data Warehouse Particionado em ORC</p>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <span class="badge-time">⏱️ 02:40 – 03:50 (70s)</span>
+      <div class="team-badge">Grupo 3</div>
+    </div>
+  </header>
+
+  <div class="grid-container">
+    <!-- Card 1: DAG de Execução do Spark UI -->
+    <div class="card">
+      <div class="card-header">
+        <div class="mac-dots">
+          <div class="mac-dot dot-red"></div>
+          <div class="mac-dot dot-yellow"></div>
+          <div class="mac-dot dot-green"></div>
+        </div>
+        <span class="card-title">Spark Master UI (8080) — DAG & Wide Dependencies</span>
+        <span style="color: #ff7b72; font-weight: bold; font-size: 13px;">● SHUFFLE IDENTIFICADO</span>
+      </div>
+      <div class="card-body" style="padding: 16px;">
+        <div class="dag-box">
+          <div class="dag-stage">
+            <div class="dag-stage-title">
+              <span>Stage 0: Map / Filter HDFS Log</span>
+              <span style="color: #8b949e;">4 Partições</span>
+            </div>
+            <div class="dag-ops">
+              <span class="op-tag">textFile(/raw/ecommerce/*)</span>
+              <span class="op-tag">map(parse_json)</span>
+              <span class="op-tag">filter(CART_ADD)</span>
+            </div>
+          </div>
+
+          <div class="dag-arrow">⬇ ⬇ 🔀 SHUFFLE READ / WRITE (Wide Dependency) ⬇ ⬇</div>
+
+          <div class="dag-stage" style="border-color: #f85149;">
+            <div class="dag-stage-title">
+              <span style="color: #ff7b72;">Stage 1: reduceByKey & Join (Shuffle Boundary)</span>
+              <span style="color: #ff7b72;">Wide Dependency</span>
+            </div>
+            <div class="dag-ops">
+              <span class="op-tag op-shuffle">reduceByKey(category, subtotal)</span>
+              <span class="op-tag op-shuffle">user_clicks.join(user_checkouts)</span>
+              <span class="op-tag">groupBy("category")</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal" style="font-size: 12.5px;">
+          <p><span class="prompt">julio@macbook:~$</span> <span class="cmd">python3 spark/etl_batch.py</span></p>
+          <p>[Passo 2] Executando WIDE DEPENDENCY I: RDD reduceByKey (Shuffle)...</p>
+          <p style="color: #7ee787;">  • Informatica: R$ 6.798,90</p>
+          <p style="color: #7ee787;">  • Eletronicos: R$ 4.648,50</p>
+          <p style="color: #7ee787;">  • Esportes: R$ 2.669,00</p>
+          <p>[Passo 3] Executando WIDE DEPENDENCY II: RDD Join entre Datasets Distintos...</p>
+          <p style="color: #79c0ff;">✔ Pares (Clique x Checkout) correlacionados via Join: 28 conversões</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Hive Data Warehouse -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Apache Hive — dw_sales_funnel_daily (ORC Particionado)</span>
+        <span style="color: #3fb950; font-size: 13px;">Hive Metastore 9083</span>
+      </div>
+      <div class="card-body" style="padding: 16px;">
+        <div class="terminal" style="font-size: 12px; margin-bottom: 12px; flex: none;">
+          <p><span class="prompt">hive&gt;</span> <span class="cmd">SELECT category, total_clicks, total_checkouts, conversion_rate_cart, total_revenue, dt FROM ecommerce_dw.dw_sales_funnel_daily WHERE dt='2026-09-26';</span></p>
+        </div>
+
+        <table style="flex: 1;">
+          <thead>
+            <tr>
+              <th>category</th>
+              <th>clicks</th>
+              <th>cart_adds</th>
+              <th>checkouts</th>
+              <th>conv_cart %</th>
+              <th>total_revenue</th>
+              <th>dt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: #79c0ff; font-weight: bold;">Informatica</td>
+              <td>142</td>
+              <td>58</td>
+              <td>24</td>
+              <td>40.8%</td>
+              <td>R$ 48.290,00</td>
+              <td style="color: #d29922;">2026-09-26</td>
+            </tr>
+            <tr>
+              <td style="color: #79c0ff; font-weight: bold;">Eletronicos</td>
+              <td>189</td>
+              <td>64</td>
+              <td>31</td>
+              <td>33.8%</td>
+              <td>R$ 72.840,50</td>
+              <td style="color: #d29922;">2026-09-26</td>
+            </tr>
+            <tr>
+              <td style="color: #79c0ff; font-weight: bold;">Moda</td>
+              <td>98</td>
+              <td>37</td>
+              <td>19</td>
+              <td>37.7%</td>
+              <td>R$ 6.420,00</td>
+              <td style="color: #d29922;">2026-09-26</td>
+            </tr>
+            <tr>
+              <td style="color: #79c0ff; font-weight: bold;">Casa</td>
+              <td>76</td>
+              <td>29</td>
+              <td>12</td>
+              <td>38.1%</td>
+              <td>R$ 14.890,00</td>
+              <td style="color: #d29922;">2026-09-26</td>
+            </tr>
+            <tr>
+              <td style="color: #79c0ff; font-weight: bold;">Esportes</td>
+              <td>84</td>
+              <td>31</td>
+              <td>15</td>
+              <td>36.9%</td>
+              <td>R$ 11.230,00</td>
+              <td style="color: #d29922;">2026-09-26</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; margin-top: 10px; font-size: 13px;">
+          <span style="color: #3fb950; font-weight: bold;">✔ Vantagem Hive ORC:</span>
+          <span> Particionamento por <code>dt</code> viabiliza Partition Pruning, eliminando leitura desnecessária no HDFS por ferramentas de BI.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="speaker-box">
+      <span>🎤 Apresentador: <strong>Julio Henrique Rodrigues Fernandes</strong></span>
+      <span style="color: #8b949e;">|</span>
+      <span>Foco: RDD reduceByKey & Join (Wide Dependencies com Shuffle no DAG) e Hive Data Warehouse</span>
+    </div>
+    <div>Grupo 3 • Big Data em Tempo Real</div>
+  </footer>
+
+</body>
+</html>

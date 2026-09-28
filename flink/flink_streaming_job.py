@@ -78,7 +78,7 @@ class SimulatedHBaseClient:
         logger.info(f"📊 [HBase PUT -> product_realtime_metrics] RowKey: {row_key} | Clicks: {count} | WindowEnd: {window_end}")
 
 
-def run_flink_pipeline(stream_source_path="logs/ecommerce.log"):
+def run_flink_pipeline(stream_source_path="logs/ecommerce.log", exit_on_eof=False):
     """
     Executa a lógica de streaming com Watermarks e Janelas Deslizantes.
     Pode ser executado diretamente pelo PyFlink ou pelo daemon de monitoramento.
@@ -102,6 +102,9 @@ def run_flink_pipeline(stream_source_path="logs/ecommerce.log"):
         while True:
             line = f.readline()
             if not line:
+                if exit_on_eof:
+                    logger.info("Fim do arquivo alcançado (--exit-on-eof). Finalizando processamento de janelas.")
+                    break
                 time.sleep(0.5)
                 continue
 
@@ -196,7 +199,27 @@ def run_flink_pipeline(stream_source_path="logs/ecommerce.log"):
                             }
                             hbase_sink.put_alert(alert_row, alert_data)
 
+    # Ao finalizar o stream (se exit_on_eof=True), faz o flush das janelas restantes
+    if active_windows:
+        logger.info(f"Processando flush final de {len(active_windows)} janelas ativas...")
+        for (win_start, win_end), counts in list(active_windows.items()):
+            for pid, count in counts.items():
+                hbase_sink.put_metric(f"FINAL#{pid}", count, win_end)
+                if count >= HOT_PRODUCT_THRESHOLD:
+                    reverse_ts = 9999999999999 - win_end
+                    alert_row = f"TRENDING_SURGE#{reverse_ts}#{pid}"
+                    alert_data = {
+                        "alert_type": "TRENDING_PRODUCT_SURGE",
+                        "product_id": pid,
+                        "clicks_in_window": count,
+                        "window_start": win_start,
+                        "window_end": win_end
+                    }
+                    hbase_sink.put_alert(alert_row, alert_data)
+
 
 if __name__ == "__main__":
-    stream_file = sys.argv[1] if len(sys.argv) > 1 else "logs/ecommerce.log"
-    run_flink_pipeline(stream_file)
+    exit_on_eof = "--exit-on-eof" in sys.argv or "--once" in sys.argv
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    stream_file = args[0] if len(args) > 0 else "logs/ecommerce.log"
+    run_flink_pipeline(stream_file, exit_on_eof=exit_on_eof)

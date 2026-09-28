@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Bloco 1 - Arquitetura End-to-End & Cluster Docker | Grupo 3</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px;
+      height: 1080px;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 60px;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #30363d;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    .badge-time {
+      background: #238636;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .title-group h1 {
+      font-size: 32px;
+      color: #58a6ff;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .title-group p {
+      font-size: 18px;
+      color: #8b949e;
+    }
+    .team-badge {
+      background: #1f6feb22;
+      border: 1px solid #1f6feb88;
+      color: #58a6ff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      flex: 1;
+    }
+
+    .card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-header {
+      background: #161b22;
+      padding: 14px 20px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mac-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .mac-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #f0f6fc;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .card-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Terminal output */
+    .terminal {
+      font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+      font-size: 15px;
+      line-height: 1.6;
+      background: #06090f;
+      padding: 20px;
+      border-radius: 8px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .prompt { color: #58a6ff; font-weight: bold; }
+    .cmd { color: #f0f6fc; font-weight: bold; }
+    .table-header { color: #8b949e; border-bottom: 1px solid #21262d; padding-bottom: 4px; }
+    .service-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #161b22; }
+    .svc-name { color: #79c0ff; width: 170px; }
+    .svc-status { color: #3fb950; font-weight: bold; width: 90px; }
+    .svc-ports { color: #d29922; }
+
+    /* Pipeline Flowchart Visual */
+    .pipeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: 100%;
+      justify-content: center;
+    }
+    .pipeline-step {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+    .step-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .icon-gen { background: #8957e522; border: 1px solid #8957e5; color: #d2a8ff; }
+    .icon-flume { background: #d2992222; border: 1px solid #d29922; color: #e3b341; }
+    .icon-flink { background: #f8514922; border: 1px solid #f85149; color: #ff7b72; }
+    .icon-spark { background: #1f6feb22; border: 1px solid #1f6feb; color: #58a6ff; }
+    .icon-store { background: #23863622; border: 1px solid #238636; color: #3fb950; }
+
+    .step-info h3 { font-size: 18px; color: #f0f6fc; margin-bottom: 4px; }
+    .step-info p { font-size: 14px; color: #8b949e; }
+    .tech-tag {
+      margin-left: auto;
+      background: #21262d;
+      color: #58a6ff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #30363d;
+      font-family: monospace;
+    }
+
+    footer {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      color: #8b949e;
+    }
+    .speaker-box {
+      background: #161b22;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      color: #f0f6fc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .speaker-box strong { color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>🌐 Bloco 1: Introdução & Arquitetura End-to-End</h1>
+      <p>Trabalho Prático AP1 • Big Data em Tempo Real • Monitoramento de Vendas & Logística</p>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <span class="badge-time">⏱️ 00:00 – 00:45 (45s)</span>
+      <div class="team-badge">Grupo 3</div>
+    </div>
+  </header>
+
+  <div class="grid-container">
+    <!-- Card 1: Pipeline Flow -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">📌 FLUXO ARQUITETURAL COMPLETO</span>
+        <span style="color: #8b949e; font-size: 13px;">Geração ➔ Ingestão ➔ Processamento ➔ Armazenamento</span>
+      </div>
+      <div class="card-body">
+        <div class="pipeline-container">
+          <div class="pipeline-step">
+            <div class="step-icon icon-gen">⚡</div>
+            <div class="step-info">
+              <h3>1. Geração Contínua de Eventos</h3>
+              <p>Simulação de cliques, carrinho, vendas e jitter de rede (out-of-order)</p>
+            </div>
+            <div class="tech-tag">gerador.py</div>
+          </div>
+
+          <div class="pipeline-step">
+            <div class="step-icon icon-flume">🌊</div>
+            <div class="step-info">
+              <h3>2. Ingestão Fan-out Desacoplada</h3>
+              <p>Fonte TAILDIR com checkpoint e replicação simultânea</p>
+            </div>
+            <div class="tech-tag">Apache Flume</div>
+          </div>
+
+          <div class="pipeline-step">
+            <div class="step-icon icon-flink">⚡</div>
+            <div class="step-info">
+              <h3>3. Fast Data: Streaming de Baixa Latência</h3>
+              <p>Janelas Deslizantes de 60s, Watermarks e alertas operacionais</p>
+            </div>
+            <div class="tech-tag">Apache Flink ➔ HBase</div>
+          </div>
+
+          <div class="pipeline-step">
+            <div class="step-icon icon-spark">🔥</div>
+            <div class="step-info">
+              <h3>4. Big Data: Batch Analytics & BI</h3>
+              <p>Wide Dependencies (reduceByKey / Join / Shuffle) e carga analítica</p>
+            </div>
+            <div class="tech-tag">Apache Spark ➔ Hive</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Docker Cluster -->
+    <div class="card">
+      <div class="card-header">
+        <div class="mac-dots">
+          <div class="mac-dot dot-red"></div>
+          <div class="mac-dot dot-yellow"></div>
+          <div class="mac-dot dot-green"></div>
+        </div>
+        <span class="card-title">terminal — docker compose ps</span>
+        <span style="color: #3fb950; font-size: 13px;">● Cluster Ativo (9 serviços)</span>
+      </div>
+      <div class="card-body" style="padding: 16px;">
+        <div class="terminal">
+          <p><span class="prompt">kelvin@macbook:~/trabalho-bigdata$</span> <span class="cmd">docker compose ps</span></p>
+          <br>
+          <div class="table-header service-row">
+            <span style="width: 170px;">SERVICE</span>
+            <span style="width: 90px;">STATUS</span>
+            <span>PORTS & MAPPINGS</span>
+          </div>
+          <br>
+          <div class="service-row">
+            <span class="svc-name">namenode</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">0.0.0.0:8020->8020, 0.0.0.0:9870->9870</span>
+          </div>
+          <div class="service-row">
+            <span class="svc-name">datanode</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">0.0.0.0:9864->9864</span>
+          </div>
+          <div class="service-row">
+            <span class="svc-name">zookeeper</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">0.0.0.0:2181->2181</span>
+          </div>
+          <div class="service-row">
+            <span class="svc-name">hbase</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">0.0.0.0:9090->9090, 0.0.0.0:16010->16010</span>
+          </div>
+          <div class="service-row">
+            <span class="svc-name">flink-jobmanager</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">0.0.0.0:8081->8081, 0.0.0.0:9999->9999</span>
+          </div>
+          <div class="service-row">
+            <span class="svc-name">flink-taskmanager</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">Task Slots: 2 / Memory: 768m</span>
+          </div>
+          <div class="service-row">
+            <span class="svc-name">spark-master</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">0.0.0.0:7077->7077, 0.0.0.0:8080->8080</span>
+          </div>
+          <div class="service-row">
+            <span class="svc-name">spark-worker</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">2 Cores / 768m RAM / Registered</span>
+          </div>
+          <div class="service-row">
+            <span class="svc-name">flume-agent</span>
+            <span class="svc-status">Up (healthy)</span>
+            <span class="svc-ports">TAILDIR -> MemoryChannel -> (HDFS, Flink)</span>
+          </div>
+          <br>
+          <p style="color: #3fb950;">✔ Rede 'bigdata-net' configurada | Persistência HDFS e HBase montadas com sucesso.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="speaker-box">
+      <span>🎤 Apresentador: <strong>Kelvin Barros Dias</strong></span>
+      <span style="color: #8b949e;">|</span>
+      <span>Foco: Desafio de E-commerce, Ciclo de Vida do Dado e Governança Docker</span>
+    </div>
+    <div>Integrantes: Kelvin Dias • Micaell Gomes • Ester Luiza • Kaike Alves • Julio Rodrigues</div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Bloco 5 - Defesa dos Trade-offs & Conclusão | Grupo 3</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1920px;
+      height: 1080px;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 60px;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #30363d;
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+    .badge-time {
+      background: #238636;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .title-group h1 {
+      font-size: 32px;
+      color: #58a6ff;
+      margin-bottom: 6px;
+    }
+    .title-group p {
+      font-size: 18px;
+      color: #8b949e;
+    }
+    .team-badge {
+      background: #1f6feb22;
+      border: 1px solid #1f6feb88;
+      color: #58a6ff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .grid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex: 1;
+    }
+
+    .card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-header {
+      background: #161b22;
+      padding: 14px 20px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #f0f6fc;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    th, td {
+      border: 1px solid #30363d;
+      padding: 14px 18px;
+      text-align: left;
+    }
+    th {
+      background: #161b22;
+      color: #58a6ff;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    tr:nth-child(even) { background: #0d1117; }
+    tr:nth-child(odd) { background: #06090f; }
+
+    .tech-chosen {
+      color: #3fb950;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tech-rejected {
+      color: #f85149;
+      text-decoration: line-through;
+      font-size: 14px;
+    }
+
+    /* Team credits */
+    .credits-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .credit-box {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .member-name { font-size: 16px; font-weight: bold; color: #f0f6fc; margin-bottom: 4px; }
+    .member-role { font-size: 12.5px; color: #8b949e; line-height: 1.3; }
+
+    footer {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      color: #8b949e;
+    }
+    .speaker-box {
+      background: #161b22;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      color: #f0f6fc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .speaker-box strong { color: #58a6ff; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>⚖️ Bloco 5: Defesa dos Trade-offs de Arquitetura & Conclusão</h1>
+      <p>Justificativas Técnicas (30% da Nota de Avaliação) e Apresentação Final da Equipe</p>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: center;">
+      <span class="badge-time">⏱️ 03:50 – 05:00 (70s)</span>
+      <div class="team-badge">Grupo 3</div>
+    </div>
+  </header>
+
+  <div class="grid-container">
+    <!-- Card: Tabela de Trade-offs -->
+    <div class="card" style="flex: 1;">
+      <div class="card-header">
+        <span class="card-title">MATRIZ COMPARATIVA DE TRADE-OFFS TÉCNICOS</span>
+        <span style="color: #58a6ff; font-size: 13px;">docs/justificativas_tecnicas.md</span>
+      </div>
+      <div class="card-body" style="padding: 0;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 220px;">Decisão Arquitetural</th>
+              <th style="width: 240px;">Tecnologia Adotada</th>
+              <th style="width: 240px;">Alternativa Descartada</th>
+              <th>Justificativa Técnica Baseada nos Requisitos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Motor de Streaming</strong></td>
+              <td><span class="tech-chosen">✔ Apache Flink</span></td>
+              <td><span class="tech-rejected">✖ Apache Spark Streaming</span></td>
+              <td>Flink é <strong>nativamente orientado a eventos</strong> (latência sub-segundo registro a registro) e gerencia <strong>Event Time com Watermarks</strong> para eventos com atraso, enquanto o Spark opera por micro-batches.</td>
+            </tr>
+            <tr>
+              <td><strong>Armazenamento de Alertas</strong></td>
+              <td><span class="tech-chosen">✔ Apache HBase</span></td>
+              <td><span class="tech-rejected">✖ Persistência Direta HDFS</span></td>
+              <td>O HDFS é voltado para throughput de leitura sequencial (<em>write-once, read-many</em>). O HBase provê <strong>leitura e escrita pontual randômica</strong> por chave (<code>RowKey</code> reversa) em &lt; 5ms para operação.</td>
+            </tr>
+            <tr>
+              <td><strong>Data Warehouse Analítico</strong></td>
+              <td><span class="tech-chosen">✔ Apache Hive DW</span></td>
+              <td><span class="tech-rejected">✖ Consultas JSON em HDFS</span></td>
+              <td>O Hive provê catálogo semântico (Metastore), formato colunar <strong>ORC com compressão</strong> e <strong>Partition Pruning</strong> por data (<code>dt</code>), economizando até 85% de I/O de rede e disco.</td>
+            </tr>
+            <tr>
+              <td><strong>Ingestão Resiliente</strong></td>
+              <td><span class="tech-chosen">✔ Apache Flume (TAILDIR)</span></td>
+              <td><span class="tech-rejected">✖ Scripts Shell / Cron</span></td>
+              <td>Flume mantém ponteiro transacional em arquivo de posição (sem perda ou duplicidade após falhas) e realiza <strong>Fan-out simultâneo</strong> para HDFS e Flink sem onerar a aplicação geradora.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Integrantes do Grupo 3 -->
+    <div class="credits-grid">
+      <div class="credit-box">
+        <div class="member-name">Kelvin Barros Dias</div>
+        <div class="member-role">Arquitetura, Docker Compose & Ingestão Flume</div>
+      </div>
+      <div class="credit-box">
+        <div class="member-name">Micaell Gomes</div>
+        <div class="member-role">Geração de Eventos Sintéticos & Jitter de Rede</div>
+      </div>
+      <div class="credit-box">
+        <div class="member-name">Ester Luiza De Souza</div>
+        <div class="member-role">Streaming Flink, Janelas Deslizantes & Watermarks</div>
+      </div>
+      <div class="credit-box">
+        <div class="member-name">Kaike Ferreira Alves</div>
+        <div class="member-role">Streaming Flink & Persistência NoSQL HBase</div>
+      </div>
+      <div class="credit-box">
+        <div class="member-name">Julio Henrique Rodrigues</div>
+        <div class="member-role">Batch Analytics Spark (Wide Deps) & Hive DW</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="speaker-box">
+      <span>🎤 Apresentadores: <strong>Kelvin Barros Dias & Todos os Integrantes do Grupo 3</strong></span>
+      <span style="color: #8b949e;">|</span>
+      <span>Obrigado pela atenção! Trabalho Prático AP1 — Big Data em Tempo Real</span>
+    </div>
+    <div style="color: #3fb950; font-weight: bold;">✔ 100% dos Requisitos Cumpridos (Código + Vídeo + Justificativas)</div>
+  </footer>
+
+</body>
+</html>
