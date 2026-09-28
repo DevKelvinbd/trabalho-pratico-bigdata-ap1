@@ -17,3 +17,12 @@ dw_output/
 
 # Docker volumes / temporários
 *.pid
+
+# Apresentação, Mídia e Roteiros (Não versionados no GitHub)
+*.srt
+*.mp4
+docs/prints/
+docs/slides/
+docs/roteiro_video_5min.md
+docs/codigos_para_o_video.md
+scripts/

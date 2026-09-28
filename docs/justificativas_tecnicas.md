@@ -3,7 +3,7 @@
 **Trabalho Prático AP1 — Arquitetura de Big Data em Tempo Real**  
 **Grupo 3**: Kelvin Barros Dias, Micaell Gomes, Ester Luiza De Souza Lima, Kaike Ferreira Alves, Julio Henrique Rodrigues Fernandes  
 
-Este documento reúne a fundamentação teórica e técnica que embasa as decisões de design da arquitetura implementada, servindo de base para as perguntas e avaliação do vídeo.
+Este documento reúne a fundamentação teórica e técnica que embasa as decisões de design da arquitetura implementada, servindo de base para a avaliação técnica do projeto.
 
 ---
 

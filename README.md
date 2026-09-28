@@ -8,7 +8,7 @@
 | Integrante | Função / Frente Principal |
 | :--- | :--- |
 | **Kelvin Barros Dias** | Arquitetura, Docker & Ingestão com Flume |
-| **Micaell Gomes** | Geração de Dados Contínuos & Roteiro do Vídeo |
+| **Micaell Gomes** | Geração de Dados Contínuos & Ingestão com Flume |
 | **Ester Luiza De Souza Lima** | Streaming com Flink (Watermarks e Janelas Deslizantes) |
 | **Kaike Ferreira Alves** | Streaming com Flink & Persistência em HBase |
 | **Julio Henrique Rodrigues Fernandes** | Batch Analytics com Spark (Wide Dependencies) & Hive |
@@ -90,7 +90,6 @@ Trabalho BIG DATA/
 │   ├── hbase_schema.hbase       # DDL das tabelas no HBase
 │   └── hive_tables.sql          # DDL do Data Warehouse no Hive
 ├── docs/
-│   ├── roteiro_video_5min.md    # Roteiro minuto a minuto para o vídeo de apresentação
 │   └── justificativas_tecnicas.md # Defesa dos trade-offs técnicos (30% da avaliação)
 ├── logs/                        # Diretório local onde os logs são escritos e monitorados
 └── README.md                    # Este arquivo
@@ -168,9 +167,3 @@ As decisões de arquitetura estão documentadas em [docs/justificativas_tecnicas
 - **Por que Flink e não Spark Streaming?** Flink é nativamente *event-driven* com latência em milissegundos e suporte a Watermarks e Janelas Deslizantes, enquanto Spark Streaming tradicional opera por micro-batching.
 - **Por que HBase e não apenas HDFS?** HDFS é *write-once, read-many*. O HBase provê leitura e escrita randômica por chave (`RowKey`) em milissegundos para atendimento operacional.
 - **Por que Hive e não HDFS direto?** O Hive provê catálogo semântico (Metastore), particionamento para economia de I/O (*Partition Pruning*) e suporte a ferramentas de BI.
-
----
-
-## 📹 6. Apresentação em Vídeo (Máximo 5 Minutos)
-
-Roteiro cronometrado e dividido entre os 5 integrantes: [docs/roteiro_video_5min.md](docs/roteiro_video_5min.md).
