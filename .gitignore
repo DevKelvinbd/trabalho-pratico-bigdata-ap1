@@ -21,6 +21,8 @@ dw_output/
 # Apresentação, Mídia e Roteiros (Não versionados no GitHub)
 *.srt
 *.mp4
+*.docx
+*.doc
 docs/prints/
 docs/slides/
 docs/roteiro_video_5min.md
